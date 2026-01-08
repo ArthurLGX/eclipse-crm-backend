@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "commonjs",
+    "lib": ["ES2019", "ES2020.Promise", "ES2020.BigInt", "ES2020.String"],
+    "declaration": true,
+    "declarationMap": true,
+    "composite": false,
+    "incremental": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {},
+    "rootDir": ".",
+    "outDir": "dist",
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "include": ["./src/**/*", "./config/**/*", "./types/**/*"],
+  "exclude": ["node_modules", "dist", "build", ".cache"]
+}
+
