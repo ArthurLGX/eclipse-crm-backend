@@ -39,8 +39,10 @@ jobs:
             echo "Starting deployment..."
             cd /var/www/eclipsestudiodashboard/backend/eclipse-crm-backend/
             echo "Current directory: $(pwd)"
-            echo "Stashing local changes..."
-            git stash
+            echo "Cleaning untracked files..."
+            git clean -fd
+            echo "Resetting local changes..."
+            git reset --hard HEAD
             echo "Pulling latest changes..."
             git pull origin main
             echo "Copying production environment file..."
