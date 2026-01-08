@@ -59,6 +59,8 @@ jobs:
             pnpm list mysql2
             echo "Testing mysql2 connection capability..."
             node -e "try { require('mysql2'); console.log('mysql2 module loaded successfully'); } catch(e) { console.error('mysql2 module failed to load:', e.message); process.exit(1); }"
+            echo "Generating types..."
+            pnpm strapi ts:generate-types
             echo "Building application..."
             pnpm build
             echo "Restarting application..."

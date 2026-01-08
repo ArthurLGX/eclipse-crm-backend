@@ -1,0 +1,71 @@
+{
+  "kind": "collectionType",
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project",
+    "description": "Projets du freelance"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "project_type": {
+      "type": "enumeration",
+      "enum": ["fixed", "hourly"],
+      "default": "fixed",
+      "required": true
+    },
+    "budget_sold": {
+      "type": "decimal"
+    },
+    "estimated_hours": {
+      "type": "decimal"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "in_progress", "completed", "cancelled"],
+      "default": "pending",
+      "required": true
+    },
+    "start_date": {
+      "type": "date"
+    },
+    "end_date": {
+      "type": "date"
+    },
+    "client": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::client.client",
+      "inversedBy": "projects"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "time_entries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::time-entry.time-entry",
+      "mappedBy": "project"
+    },
+    "tasks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::task.task",
+      "mappedBy": "project"
+    }
+  }
+}
+

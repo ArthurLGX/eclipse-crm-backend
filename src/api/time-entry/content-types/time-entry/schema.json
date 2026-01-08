@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "time_entries",
+  "info": {
+    "singularName": "time-entry",
+    "pluralName": "time-entries",
+    "displayName": "TimeEntry",
+    "description": "Entrées de temps"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "duration": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "billable": {
+      "type": "boolean",
+      "default": true
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project.project",
+      "inversedBy": "time_entries"
+    },
+    "task": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::task.task",
+      "inversedBy": "time_entries"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}
+
