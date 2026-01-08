@@ -16,11 +16,16 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build Strapi
-        run: npm run build
+        run: pnpm build
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -46,18 +51,16 @@ jobs:
             grep -v "PASSWORD" .env
             echo "Cleaning cache and build directories..."
             rm -rf .cache build dist
-            echo "Installing dependencies..."
-            npm ci
-            echo "Installing mysql2..."
-            npm install mysql2 --save
+            echo "Installing dependencies with pnpm..."
+            pnpm install
             echo "Verifying mysql2 installation..."
-            npm list mysql2
+            pnpm list mysql2
             echo "Testing mysql2 connection capability..."
             node -e "try { require('mysql2'); console.log('mysql2 module loaded successfully'); } catch(e) { console.error('mysql2 module failed to load:', e.message); process.exit(1); }"
             echo "Building application..."
-            npm run build
+            pnpm build
             echo "Restarting application..."
-            pm2 restart eclipse-crm-backend-strapi || pm2 start npm --name "eclipse-crm-backend-strapi" -- start
+            pm2 restart eclipse-crm-backend-strapi || pm2 start "pnpm start" --name "eclipse-crm-backend-strapi"
             echo "Waiting for application to start..."
             sleep 10
             echo "Checking application status..."
