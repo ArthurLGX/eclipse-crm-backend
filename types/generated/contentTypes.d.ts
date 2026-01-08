@@ -868,6 +868,126 @@ export interface PluginUsersPermissionsUser
   };
 }
 
+export interface ApiClientClient extends Struct.CollectionTypeSchema {
+  collectionName: 'clients';
+  info: {
+    singularName: 'client';
+    pluralName: 'clients';
+    displayName: 'Client';
+    description: 'Clients du freelance';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    email: Schema.Attribute.Email;
+    company: Schema.Attribute.String;
+    phone: Schema.Attribute.String;
+    address: Schema.Attribute.Text;
+    payment_terms: Schema.Attribute.Integer;
+    notes: Schema.Attribute.Text;
+    user: Schema.Attribute.Relation<'manyToOne', 'plugin::users-permissions.user'>;
+    projects: Schema.Attribute.Relation<'oneToMany', 'api::project.project'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::client.client'> & Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProjectProject extends Struct.CollectionTypeSchema {
+  collectionName: 'projects';
+  info: {
+    singularName: 'project';
+    pluralName: 'projects';
+    displayName: 'Project';
+    description: 'Projets du freelance';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    description: Schema.Attribute.Text;
+    project_type: Schema.Attribute.Enumeration<['fixed', 'hourly']> & Schema.Attribute.Required;
+    budget_sold: Schema.Attribute.Decimal;
+    estimated_hours: Schema.Attribute.Decimal;
+    status: Schema.Attribute.Enumeration<['pending', 'in_progress', 'completed', 'cancelled']> & Schema.Attribute.Required;
+    start_date: Schema.Attribute.Date;
+    end_date: Schema.Attribute.Date;
+    client: Schema.Attribute.Relation<'manyToOne', 'api::client.client'>;
+    user: Schema.Attribute.Relation<'manyToOne', 'plugin::users-permissions.user'>;
+    time_entries: Schema.Attribute.Relation<'oneToMany', 'api::time-entry.time-entry'>;
+    tasks: Schema.Attribute.Relation<'oneToMany', 'api::task.task'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::project.project'> & Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTaskTask extends Struct.CollectionTypeSchema {
+  collectionName: 'tasks';
+  info: {
+    singularName: 'task';
+    pluralName: 'tasks';
+    displayName: 'Task';
+    description: 'Tâches des projets';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    description: Schema.Attribute.Text;
+    priority: Schema.Attribute.Enumeration<['low', 'medium', 'high']>;
+    perceived_value: Schema.Attribute.Enumeration<['critical', 'important', 'optional']>;
+    estimated_hours: Schema.Attribute.Decimal;
+    status: Schema.Attribute.Enumeration<['pending', 'in_progress', 'completed']>;
+    project: Schema.Attribute.Relation<'manyToOne', 'api::project.project'>;
+    time_entries: Schema.Attribute.Relation<'oneToMany', 'api::time-entry.time-entry'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::task.task'> & Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTimeEntryTimeEntry extends Struct.CollectionTypeSchema {
+  collectionName: 'time_entries';
+  info: {
+    singularName: 'time-entry';
+    pluralName: 'time-entries';
+    displayName: 'TimeEntry';
+    description: 'Entrées de temps';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    duration: Schema.Attribute.Integer & Schema.Attribute.Required;
+    date: Schema.Attribute.Date & Schema.Attribute.Required;
+    description: Schema.Attribute.Text;
+    billable: Schema.Attribute.Boolean;
+    project: Schema.Attribute.Relation<'manyToOne', 'api::project.project'>;
+    task: Schema.Attribute.Relation<'manyToOne', 'api::task.task'>;
+    user: Schema.Attribute.Relation<'manyToOne', 'plugin::users-permissions.user'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::time-entry.time-entry'> & Schema.Attribute.Private;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ContentTypeSchemas {
@@ -878,6 +998,10 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::client.client': ApiClientClient;
+      'api::project.project': ApiProjectProject;
+      'api::task.task': ApiTaskTask;
+      'api::time-entry.time-entry': ApiTimeEntryTimeEntry;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
