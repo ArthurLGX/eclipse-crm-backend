@@ -1,0 +1,8 @@
+# Packages approved to run build scripts
+sharp: true
+better-sqlite3: true
+"@parcel/watcher": true
+"@swc/core": true
+esbuild: true
+core-js-pure: true
+

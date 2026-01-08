@@ -2,22 +2,22 @@ name: Deploy Eclipse CRM Backend to VPS
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 10
 
@@ -28,7 +28,7 @@ jobs:
         run: pnpm build
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@main
         with:
           host: ${{ secrets.VPS_HOSTNAME }}
           username: ${{ secrets.VPS_USERNAME }}
@@ -42,7 +42,7 @@ jobs:
             echo "Stashing local changes..."
             git stash
             echo "Pulling latest changes..."
-            git pull origin master
+            git pull origin main
             echo "Copying production environment file..."
             echo "${{ secrets.ENV_PRODUCTION }}" > .env
             echo "Converting .env to Unix format..."
@@ -50,7 +50,7 @@ jobs:
             echo "Checking .env file (without sensitive data)..."
             grep -v "PASSWORD" .env
             echo "Cleaning cache and build directories..."
-            rm -rf .cache build dist
+            rm -rf .cache build dist node_modules
             echo "Installing dependencies with pnpm..."
             pnpm install
             echo "Verifying mysql2 installation..."
@@ -73,7 +73,7 @@ jobs:
 
       - name: Send Discord Notification
         if: success()
-        uses: Ilshidur/action-discord@master
+        uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
@@ -82,10 +82,9 @@ jobs:
 
       - name: Send Discord notification on failure
         if: failure()
-        uses: Ilshidur/action-discord@master
+        uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
           args: "❌ Échec du déploiement Eclipse CRM Backend"
         continue-on-error: true
-
